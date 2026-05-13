@@ -1,6 +1,6 @@
 {
   "name": "@plasius/ai-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MCP tool registry, per-call allowlist, and tool audit contracts for Plasius agentic AI.",
   "type": "module",
   "sideEffects": false,
