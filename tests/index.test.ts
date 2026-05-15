@@ -55,7 +55,6 @@ describe("@plasius/ai-mcp", () => {
       requestedTools: ["tool.safe", "tool.privileged"],
       toolRegistry,
       actorRole: "player",
-      correlationId: "corr-1",
     });
 
     expect(result).toMatchObject({
@@ -69,6 +68,7 @@ describe("@plasius/ai-mcp", () => {
         result: "deny",
       },
     });
+    expect(result.audit.correlationId.length).toBeGreaterThan(0);
   });
 
   it("allows safe tools and blocks unrestricted roles from restricted tools", () => {
@@ -168,5 +168,25 @@ describe("@plasius/ai-mcp", () => {
       "mcp-allowlist-deny-all",
       "mcp-allowlist-empty-request",
     ]));
+  });
+
+  it("defaults missing actor role and registry to deny unregistered tools", () => {
+    const result = resolveAiMcpToolAllowlist({
+      requestedTools: ["tool.missing"],
+      featureFlags: {
+        [AI_MCP_FEATURE_FLAGS.mcp]: true,
+      },
+    });
+
+    expect(result).toMatchObject({
+      allowedTools: [],
+      blockedTools: ["tool.missing"],
+      needsEscalation: false,
+      audit: {
+        actorRole: "player",
+        result: "deny",
+      },
+    });
+    expect(result.reasonCodes).toContain("tool-not-registered:tool.missing");
   });
 });
