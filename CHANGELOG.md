@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **Security**
   - Added restricted tool blocking and unsafe-role risk gating for safer MCP defaults.
+  - Sensitive tools are now denied for player roles unless an operator/admin context authorizes them.
 
 ## [0.1.2] - 2026-05-13
 

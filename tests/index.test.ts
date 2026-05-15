@@ -21,6 +21,11 @@ describe("@plasius/ai-mcp", () => {
       riskClass: AI_MCP_TOOL_RISK_CLASSES[0],
     },
     {
+      toolId: "tool.sensitive",
+      toolName: "Sensitive Tool",
+      riskClass: AI_MCP_TOOL_RISK_CLASSES[1],
+    },
+    {
       toolId: "tool.privileged",
       toolName: "Privileged Tool",
       riskClass: AI_MCP_TOOL_RISK_CLASSES[2],
@@ -68,7 +73,13 @@ describe("@plasius/ai-mcp", () => {
 
   it("allows safe tools and blocks unrestricted roles from restricted tools", () => {
     const result = resolveAiMcpToolAllowlist({
-      requestedTools: ["tool.safe", "tool.restricted", "tool.privileged", "tool.unknown"],
+      requestedTools: [
+        "tool.safe",
+        "tool.sensitive",
+        "tool.restricted",
+        "tool.privileged",
+        "tool.unknown",
+      ],
       toolRegistry,
       actorRole: "player",
       correlationId: "corr-2",
@@ -80,6 +91,7 @@ describe("@plasius/ai-mcp", () => {
     expect(result).toMatchObject({
       allowedTools: ["tool.safe"],
       blockedTools: expect.arrayContaining([
+        "tool.sensitive",
         "tool.restricted",
         "tool.unknown",
         "tool.privileged",
@@ -96,7 +108,7 @@ describe("@plasius/ai-mcp", () => {
   it("permits privileged tool for operator role", () => {
     expect(
       resolveAiMcpToolAllowlist({
-        requestedTools: ["tool.privileged"],
+        requestedTools: ["tool.sensitive", "tool.privileged"],
         toolRegistry,
         actorRole: "operator",
         featureFlags: {
@@ -104,7 +116,7 @@ describe("@plasius/ai-mcp", () => {
         },
       })
     ).toMatchObject({
-      allowedTools: ["tool.privileged"],
+      allowedTools: ["tool.sensitive", "tool.privileged"],
       blockedTools: [],
       needsEscalation: false,
       audit: {
@@ -116,6 +128,9 @@ describe("@plasius/ai-mcp", () => {
 
   it("returns deterministic risk gating results", () => {
     expect(isAiMcpToolAllowed("tool.safe", "player", toolRegistry)).toBe(true);
+    expect(isAiMcpToolAllowed("tool.sensitive", "player", toolRegistry)).toBe(false);
+    expect(isAiMcpToolRiskAllowed("sensitive", "operator")).toBe(true);
+    expect(isAiMcpToolRiskAllowed("sensitive", "player")).toBe(false);
     expect(isAiMcpToolAllowed("tool.restricted", "player", toolRegistry)).toBe(false);
     expect(
       isAiMcpToolRiskAllowed("privileged", "admin")

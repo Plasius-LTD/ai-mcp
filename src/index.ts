@@ -119,7 +119,7 @@ function isAllowedForRole(riskClass: AiMcpToolRiskClass, role: AiMcpActorRole): 
     return role === "admin" || role === "operator";
   }
 
-  return role === "admin" || role === "operator" || role === "player";
+  return role === "admin" || role === "operator";
 }
 
 export function resolveAiMcpToolAllowlist(
