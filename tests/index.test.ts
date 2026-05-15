@@ -129,8 +129,10 @@ describe("@plasius/ai-mcp", () => {
   it("returns deterministic risk gating results", () => {
     expect(isAiMcpToolAllowed("tool.safe", "player", toolRegistry)).toBe(true);
     expect(isAiMcpToolAllowed("tool.sensitive", "player", toolRegistry)).toBe(false);
+    expect(isAiMcpToolAllowed("tool.missing", "admin", toolRegistry)).toBe(false);
     expect(isAiMcpToolRiskAllowed("sensitive", "operator")).toBe(true);
     expect(isAiMcpToolRiskAllowed("sensitive", "player")).toBe(false);
+    expect(isAiMcpToolRiskAllowed("restricted", "system")).toBe(true);
     expect(isAiMcpToolAllowed("tool.restricted", "player", toolRegistry)).toBe(false);
     expect(
       isAiMcpToolRiskAllowed("privileged", "admin")
@@ -142,5 +144,29 @@ describe("@plasius/ai-mcp", () => {
     for (const role of AI_MCP_TOOL_ROLES) {
       expect(typeof role).toBe("string");
     }
+  });
+
+  it("reports empty enabled allowlist requests as deny-all", () => {
+    const result = resolveAiMcpToolAllowlist({
+      requestedTools: [],
+      toolRegistry,
+      actorRole: "admin",
+      featureFlags: {
+        [AI_MCP_FEATURE_FLAGS.mcp]: true,
+      },
+    });
+
+    expect(result).toMatchObject({
+      allowedTools: [],
+      blockedTools: [],
+      source: "policy-allow-empty",
+      audit: {
+        result: "deny",
+      },
+    });
+    expect(result.reasonCodes).toEqual(expect.arrayContaining([
+      "mcp-allowlist-deny-all",
+      "mcp-allowlist-empty-request",
+    ]));
   });
 });
