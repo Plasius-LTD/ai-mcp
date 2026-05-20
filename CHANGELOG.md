@@ -7,6 +7,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 - **Added**
+  - (placeholder)
+
+- **Changed**
+  - (placeholder)
+
+- **Fixed**
+  - (placeholder)
+
+- **Security**
+  - (placeholder)
+
+## [0.1.3] - 2026-05-20
+
+- **Added**
   - Added MCP tool risk classes, actor-role-based allowlist resolution, and audit metadata.
   - Added deterministic tool-allowlist result contracts with blocked/allowed reason codes.
 
@@ -43,3 +57,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 [0.1.2]: https://github.com/Plasius-LTD/ai-mcp/releases/tag/v0.1.2
 [0.1.1]: https://github.com/Plasius-LTD/ai-mcp/releases/tag/v0.1.1
+[0.1.3]: https://github.com/Plasius-LTD/ai-mcp/releases/tag/v0.1.3
