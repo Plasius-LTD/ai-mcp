@@ -93,11 +93,9 @@ Apache-2.0
 Production package publication runs only from `.github/workflows/cd.yml` on
 protected `main`. The job verifies that the prepared commit is still the
 current main commit and has an exact successful `ci.yml` push result before it
-mutates release state. Pull-request package CI runs on GitHub-hosted capacity;
-trusted pushes to `main` pass hosted admission and then run on the explicitly
-allowlisted `Public CI - Quarantined` company-managed runner group. npm publication runs on
-GitHub-hosted Node.js 24 with
-npm 11.5.1 or newer, uses the protected `production` environment and
+mutates release state. Reviewed package CI runs on explicit GitHub-hosted
+capacity with package-manager caching disabled and rejects fork PR execution.
+npm publication runs on GitHub-hosted Node.js 24 with pinned npm 11.6.2, uses the protected `production` environment and
 short-lived npm OIDC with provenance, and has no long-lived npm write-token
 fallback. Rollback disables CD; it never rewrites published package history.
 <!-- END PLASIUS RELEASE INTEGRITY -->
